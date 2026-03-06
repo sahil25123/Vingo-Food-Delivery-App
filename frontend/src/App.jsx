@@ -10,6 +10,7 @@ import CreateEditShop from "./pages/CreateEditShop";
 import AddItem from "./pages/AddItem";
 import EditItem from "./pages/EditItem";
 import CartPage from "./pages/CartPage";
+import CheckOut from "./pages/CheckOut";
 import Nav from "./components/Nav";
 
 
@@ -75,7 +76,12 @@ function App() {
         path="/cart"
         element={userData ? <CartPage /> : <Navigate to="/signin" />}
       />
+      <Route
+        path="/checkOut"
+        element={userData ? <CheckOut /> : <Navigate to="/signin" />}
+      />
     </Routes>
+
   );
 }
 export default App;
