@@ -7,10 +7,13 @@ import { FaMinus } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../redux/userSlice';
 
 
 function FoodCard({data}) {
   const [quantity, setQuantity] = useState(0);
+  const dispatch=useDispatch();
   const renderStars =(rating)=>{
     const stars = [];
     for(let i=1; i<=5; i++){
@@ -74,7 +77,15 @@ function FoodCard({data}) {
           <button className='px-2 py-1 hover:bg-gray-100 transition' onClick={handleIncrease}>
             <FaPlus size={12}/>
           </button>
-          <button className='bg-[#ff4d2d] text-white px-3 py-2 transition-colors'>
+          <button className='bg-[#ff4d2d] text-white px-3 py-2 transition-colors' onClick={() => dispatch(addToCart({
+            id: data._id,
+            name: data.name,
+            price: data.price,
+            image: data.image,
+            shop: data.shop,
+            quantity: quantity,
+            foodType: data.foodType,
+          }))}>
             <FaShoppingCart size={16}/>
           </button>
         </div>
