@@ -77,7 +77,7 @@ function App() {
         element={userData ? <CartPage /> : <Navigate to="/signin" />}
       />
       <Route
-        path="/checkOut"
+        path="/checkout"
         element={userData ? <CheckOut /> : <Navigate to="/signin" />}
       />
     </Routes>
