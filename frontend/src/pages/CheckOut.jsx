@@ -132,17 +132,15 @@ function CheckOut() {
           latitude: location.lat,
           longitude: location.lon
         },
-        totalAmount: AmountWithDeliveryFee,
-        cartItems
-      },
-      { withCredentials: true }
+        totalAmount: AmountWithDeliveryFee,cartItems
+      },{ withCredentials: true }
     );
 
     console.log("Order placed successfully:", result.data);
 
-    alert("Order placed successfully ✅");
+    // alert("Order placed successfully ✅");
 
-    navigate("/orders"); // optional redirect
+    navigate("/order-placed"); // optional redirect
 
   } catch (error) {
 

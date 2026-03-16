@@ -29,19 +29,13 @@ cartItems.forEach((item) => {
     groupItemsByShop[shopId].push(item)
 
 });
-    const shopOrders = await Promise.all(
-      Object.keys(groupItemsByShop).map(async (shopId) => {
+    const shopOrders = await Promise.all(Object.keys(groupItemsByShop).map(async (shopId) => {
         const shop = await Shop.findById(shopId).populate("owner");
         if (!shop) {
-          return res
-            .status(404)
-            .json({ message: `Shop with id ${shopId} not found` });
+          return res.status(404).json({ message: `Shop with id ${shopId} not found` });
         }
         const items = groupItemsByShop[shopId];
-        const subtotal = items.reduce(
-          (sum, i) => sum + Number(i.price) * Number(i.quantity),
-          0,
-        );
+        const subtotal = items.reduce((sum, i) => sum + Number(i.price) * Number(i.quantity),0  );
         return {
           shop: shop._id,
           shopOwner: shop.owner._id,
@@ -64,14 +58,9 @@ cartItems.forEach((item) => {
       shopOrders,
     });
 
-    return res
-      .status(201)
-      .json({ message: "Order placed successfully", order: newOrder });
+    return res.status(201).json({ message: "Order placed successfully", order: newOrder });
   } catch (error) {
     console.error("ORDER ERROR:", error);
-    res.status(500).json({
-        message: "Error placing order",
-        error: error.message
-    });
-}
+    res.status(500).json({message: "Error placing order",error: error.message});
+  }
 };
