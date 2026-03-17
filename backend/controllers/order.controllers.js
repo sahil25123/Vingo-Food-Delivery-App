@@ -84,7 +84,16 @@ export const getMyOrders= async (req,res) => {
     .populate("user")
     .populate("shopOrders.shopOrdersItems.item", "name image price")
 
-    return res.status(200).json({orders});
+    const filteredOrder=orders.map((order) => ({
+      _id: order._id,
+      paymentMethod: order.paymentMethod,
+      user: order.user,
+      shopOrders: order.shopOrders.find(o=>o.owner._id==req.userId),
+      createdAt: order.createdAt,
+      deliveryAddress: order.deliveryAddress,
+    }))
+
+    return res.status(200).json({filteredOrder});
 
     }
     
