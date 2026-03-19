@@ -113,12 +113,13 @@ function Nav() {
         </>: (<>
 
         {/* Cart Icon */}
-        <div className="relative cursor-pointer" onClick={()=>navigate("/cart")}>
+        {user?.role == "user" && <div className="relative cursor-pointer" onClick={()=>navigate("/cart")}>
             <FiShoppingCart size={25} className="text-[#ff4d2d]" />
             <span className="absolute right-[-9px] -top-3 text-[#ff4d2d]">
               {cartItems.length}
             </span>
-          </div>
+          </div>}
+        
         
 
         <button className="hidden md:block px-3 py-1 rounded-lg bg-[#ff4d2d]/10 text-[#ff4d2d] text-sm font-medium cursor-pointer" onClick={()=>navigate("/my-orders")}>
@@ -130,12 +131,11 @@ function Nav() {
           
         <div
           className="w-10 h-10 rounded-full flex items-center justify-center bg-[#ff4d2d] text-white text-[18px] shadow-xl font-semibold cursor-pointer"
-          onClick={() => setShowInfo((prev) => !prev)}
-        >
+          onClick={() => setShowInfo((prev) => !prev)}>
           {user?.fullName ? user.fullName.slice(0, 1) : "?"}
         </div>
         {showInfo && (
-          <div className="fixed top-20 right-2.5 md:right-[10%] lg:right-[25%] w-[180px] bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-50">
+          <div className={`fixed top-20 right-2.5 ${user?.role=="deliveryboy" ? "md:right-[20%] lg:right-[40%]":"md:right-[10%] lg:right-[25%]"} w-[180px] bg-white shadow-2xl rounded-xl p-5 flex flex-col gap-2.5 z-50`}>
             <div className="text-[17px] font-semibold">
               {user?.fullName}
             </div>

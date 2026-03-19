@@ -187,3 +187,28 @@ export const updateOrderStatus= async (req,res) => {
     
   }
 }
+
+export const getDeliveryBoyAssignment=async (req,res) => {
+  try {
+    const deliveryBoyId=req.userId;
+    const assignments= await DeliveryAssignment.find({
+      brodcastedTo:deliveryBoyId,
+      status:"broascasted"
+    })
+    .populate("order")
+    .populate("shop")
+
+    const formated = assignments.map(a=>({
+      assignmentId:a._id,
+      orderId:a.order._id,
+      shopName:a.shop.name,
+      deliveryAddress:a.order.deliveryAddress,
+      items:a.order.shopOrders.find(so=>so._id.equals(a.shopOrderId)).
+      shopOrderItems ||[],
+      subtotal:a.order.shopOrders.find(so=>so._id.equals(a.shopOrderId))?.subtotal,
+    }))
+    return res.status(200).json({assignments:formated});
+  } catch (error) {
+    return res.status(500).json({message:`get delivery boy assignment error ${error.message}`});
+  }
+}
