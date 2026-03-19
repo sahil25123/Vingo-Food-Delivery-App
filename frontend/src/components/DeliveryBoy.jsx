@@ -4,6 +4,7 @@ import axios from 'axios';
 import { serverUrl } from '../App';
 import { useEffect } from 'react';
 import { useState } from 'react';
+
 function DeliveryBoy() {
   const {userData} = useSelector((state)=>state.user);
   const [availableAssignments, setAvailableAssignments] =useState(null)
@@ -13,6 +14,16 @@ function DeliveryBoy() {
       setAvailableAssignments(result.data);
     } catch (error) {
       console.log("GET ASSIGNMENT ERROR:",error);
+    }
+  }
+
+  const acceptOrder=async(assignmentId)=>{
+    try {
+      const result=await axios.get(`${serverUrl}/api/order/accept-order/${assignmentId}`,{withCredentials:true})
+      console.log("ACCEPT ORDER RESULT:",result.data);
+    } catch (error) {
+      console.log("ACCEPT ORDER ERROR:",error);
+      
     }
   }
 
@@ -42,7 +53,8 @@ function DeliveryBoy() {
                   <p className='text-sm text-gray-500'><span className='font-semibold'>Delivery Address:</span> {a?.deliveryAddress.text}</p>
                   <p className='text-xs text-gray-400'>{a.items.length} items | ₹{a.subtotal}</p>
                 </div>
-                <button className='bg-orange-500 text-white px-4 py-1 rounded-lg text-sm hover:bg-orange-600 cursor-pointer'>Accept</button>
+                {/* button for delivery boy to accept the order */}
+                <button className='bg-orange-500 text-white px-4 py-1 rounded-lg text-sm hover:bg-orange-600 cursor-pointer' onClick={() => acceptOrder(a.assignmentId)}>Accept</button>
 
               </div>
             ))):<p className='text-gray-400 text-sm'>No available orders.</p>}    

@@ -214,7 +214,7 @@ export const getDeliveryBoyAssignment=async (req,res) => {
 }
 
 // controller for delivery boy to accept an order assignment
-const acceptOrder=async (req,res) => {
+export  const acceptOrder=async (req,res) => {
   try {
     const {assignmentId}=req.params;
     const assignment= await DeliveryAssignment.findById(assignmentId);
@@ -241,9 +241,10 @@ const acceptOrder=async (req,res) => {
     if(!order){
       return res.status(400).json({message:"Order not found"});
     }
-    const shopOrder=order.shopOrders.find(so=>so._id.equals(assignment.shopOrderId));
+    const shopOrder=order.shopOrders.id(assignment.shopOrderId);
     shopOrder.assignedDeliveryBoy=req.userId;
-    await order.save();
+    await order.save()
+    return res.status(200).json({message:"Order accepted successfully", order, assignment});
   } catch (error) {
     return res.status(500).json({message:`accept order error ${error.message}`});
   }
