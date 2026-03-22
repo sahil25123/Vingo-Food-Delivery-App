@@ -10,6 +10,24 @@ function useGetItemsByCity() {
   const { currentCity } = useSelector((state) => state.user);
 
   useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const result = await axios.get(
+          `${serverUrl}/api/item/get-by-city/${currentCity}`,
+          { withCredentials: true },
+        );
+        dispatch(setItemsInMyCity(result.data));
+        console.log(result.data);
+      } catch (error) {
+        console.log("Error in fetching current user", error);
+      }
+    };
+    fetchItems();
+  }, [currentCity, dispatch]);
+  const dispatch = useDispatch();
+  const { currentCity } = useSelector((state) => state.user);
+
+  useEffect(() => {
     // Only fetch if city is valid
     if (!currentCity || currentCity === "null" || currentCity === "undefined") {
       return;
@@ -30,5 +48,7 @@ function useGetItemsByCity() {
     fetchItems();
   }, [currentCity, dispatch]);
 }
+
+export default useGetItemsByCity;
 
 export default useGetItemsByCity;

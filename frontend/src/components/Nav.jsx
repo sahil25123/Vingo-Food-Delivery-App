@@ -12,8 +12,7 @@ import { TbReceipt2 } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 
 function Nav() {
-  const { userData, currentCity = "" } =
-    useSelector((state) => state.user) || {};
+  const { userData, currentCity, cartItems } = useSelector((state) => state.user) || {};
   const user = userData?.user;
   const { myShopData } = useSelector((state) => state.owner) || {};
   const [showInfo, setShowInfo] = React.useState(false);
@@ -138,8 +137,7 @@ function Nav() {
 
         <div
           className="w-10 h-10 rounded-full flex items-center justify-center bg-[#ff4d2d] text-white text-[18px] shadow-xl font-semibold cursor-pointer"
-          onClick={() => setShowInfo((prev) => !prev)}
-        >
+          onClick={() => setShowInfo((prev) => !prev)}>
           {user?.fullName ? user.fullName.slice(0, 1) : "?"}
         </div>
         {showInfo && (

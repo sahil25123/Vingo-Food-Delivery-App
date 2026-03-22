@@ -8,7 +8,11 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import FoodCard from "./FoodCard";
 
+
 function UserDashboard() {
+  const { currentCity, shopInMyCity, itemsInMyCity } = useSelector(
+    (state) => state.user,
+  );
   const { currentCity, shopInMyCity, itemsInMyCity } = useSelector(
     (state) => state.user,
   );
@@ -37,6 +41,56 @@ function UserDashboard() {
     }
   };
 
+  useEffect(() => {
+    if (cateScrollRef.current) {
+      updateButton(
+        cateScrollRef,
+        setShowLeftCateButton,
+        setShowRightCateButton,
+      );
+      updateButton(
+        shopScrollRef,
+        setShowLeftShopButton,
+        setShowRightShopButton,
+      );
+      cateScrollRef.current.addEventListener("scroll", () => {
+        updateButton(
+          cateScrollRef,
+          setShowLeftCateButton,
+          setShowRightCateButton,
+        );
+        updateButton(
+          shopScrollRef,
+          setShowLeftShopButton,
+          setShowRightShopButton,
+        );
+      });
+      shopScrollRef.current.addEventListener("scroll", () => {
+        updateButton(
+          shopScrollRef,
+          setShowLeftShopButton,
+          setShowRightShopButton,
+        );
+      });
+    }
+
+    return () => {
+      cateScrollRef?.current?.removeEventListener("scroll", () => {
+        updateButton(
+          cateScrollRef,
+          setShowLeftCateButton,
+          setShowRightCateButton,
+        );
+      });
+      shopScrollRef?.current?.removeEventListener("scroll", () => {
+        updateButton(
+          shopScrollRef,
+          setShowLeftShopButton,
+          setShowRightShopButton,
+        );
+      });
+    };
+  }, [categories]);
   useEffect(() => {
     const cateElement = cateScrollRef.current;
     const shopElement = shopScrollRef.current;
@@ -97,7 +151,7 @@ function UserDashboard() {
     <div className="w-screen min-h-screen flex flex-col gap-5 items-center bg-[#fff9f6] overflow-y-auto">
       <Nav />
       {/* category section */}
-      <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-[10px]">
+      <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-2.5">
         <h1 className="text-gray-800 text-2xl sm:text-3xl">
           {" "}
           Inspiration for your first order
@@ -136,7 +190,7 @@ function UserDashboard() {
       </div>
 
       {/* Shop section */}
-      <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-[10px]">
+      <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-2.5">
         <h1 className="text-gray-800 text-2xl sm:text-3xl">
           Best Shop in {currentCity}
         </h1>
@@ -170,11 +224,11 @@ function UserDashboard() {
       </div>
 
       {/* Product Items section */}
-      <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-[10px]">
+      <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-2.5">
         <h1 className="text-gray-800 text-2xl sm:text-3xl">
           Suggested Food Items
         </h1>
-        <div className="w-full h-auto flex flex-wrap gap-[20px] justify-center">
+        <div className="w-full h-auto flex flex-wrap gap-5 justify-center">
           {itemsInMyCity?.map((item, index) => (
             <FoodCard key={index} data={item} />
           ))}

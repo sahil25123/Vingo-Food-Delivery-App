@@ -8,6 +8,7 @@ import authRouter from "./routes/authroutes.js";
 import userRouter from "./routes/userroutes.js";
 import shopRouter from "./routes/shoproutes.js";
 import itemRouter from "./routes/itemroutes.js";
+import orderRouter from "./routes/orderroutes.js";
 
 import cors from "cors";
 const app = express();
@@ -29,13 +30,15 @@ app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/shop", shopRouter);
 app.use("/api/item", itemRouter);
+app.use("/api/order", orderRouter);
+
 
 const NODE_ENV = process.env.NODE_ENV;
 // make our app ready for deployment
 if (NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-  app.get("/{*any}", (req, res) => {
+  app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
   });
 }
