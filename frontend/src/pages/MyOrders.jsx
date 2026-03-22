@@ -13,8 +13,8 @@ function MyOrders() {
     <div className="w-full min-h-screen bg-[#fff9f6] flex justify-center px-4">
       <div className="w-full max-w-[800px] p-4">
         {/* Heading Part */}
-        <div className="flex items-center gap-[20px] mb-6">
-          <div className="z-[10] cursor-pointer" onClick={() => navigate("/")}>
+        <div className="flex items-center gap-5 mb-6">
+          <div className="z-10 cursor-pointer" onClick={() => navigate("/")}>
             <IoIosArrowRoundBack size={35} className="text-[#ff4d2d]" />
           </div>
           <h1 className="text-2xl font-bold text-start">My Orders</h1>

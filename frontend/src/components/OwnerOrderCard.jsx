@@ -58,7 +58,7 @@ function OwnerOrderCard({ data }) {
         {data.shopOrders.shopOrderItems?.map((item, index) => (
           <div
             key={index}
-            className="flex-shrink-0 w-40 border rounded-lg p-2 bg-white"
+            className="shrink-0 w-40 border rounded-lg p-2 bg-white"
           >
             <img
               src={item.item.image}
@@ -114,7 +114,7 @@ function OwnerOrderCard({ data }) {
         <div className="mt-3 p-2 border rounded-lg text-sm bg-orange-50">
           <p>Available Delivery Boys:</p>
           {availableBoys.length > 0 ? (
-            availableBoys.map((b, index) => (
+            availableBoys.map((b) => (
               <div className="text-gray-300">
                 {b.fullname}-{b.mobile}
               </div>
