@@ -5,9 +5,11 @@ import { serverUrl } from '../App';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { getCurrentOrder } from '../../../backend/controllers/order.controllers';
+import { current } from '@reduxjs/toolkit';
 
 function DeliveryBoy() {
   const {userData} = useSelector((state)=>state.user);
+  const [currentOrder, setCurrentOrder] = useState();
   const [availableAssignments, setAvailableAssignments] =useState(null)
   const getAssignments=async()=>{
     try {
@@ -21,12 +23,12 @@ function DeliveryBoy() {
   const getCurrentOrder=async()=>{
     try {
       const result=await axios.get(`${serverUrl}/api/order/get-current-order`,{withCredentials:true})
+      setCurrentOrder(result.data);
       console.log("GET CURRENT ORDER RESULT:",result.data);
     } catch (error) {
       console.log("GET CURRENT ORDER ERROR:",error);
       
     }
-  }
   }
 
   const acceptOrder=async(assignmentId)=>{
@@ -55,8 +57,9 @@ function DeliveryBoy() {
           <p className='text-[#ff4d2d]'><span className='font-semibold'>Latitude:</span> {userData?.location.coordinates[1]}, <span className='font-semibold'>Longitude:</span> {userData?.location.coordinates[0]}</p>
 
         </div>
+
         {/* available orders jo brodcast hue hain unko dikhana hai */}
-        <div className='bg-white rounded-2xl p-5 shadow-md w-[90%] border border-orange-100'>
+        {!currentOrder && <div className='bg-white rounded-2xl p-5 shadow-md w-[90%] border border-orange-100'>
           <h1 className='text-lg font-bold mb-4 flex items-center gap-2'>Available Orders</h1>
           <div className='space-y-4'>
             {availableAssignments?.length >0?(availableAssignments.map((a,index)=>(
@@ -74,7 +77,19 @@ function DeliveryBoy() {
             ))):<p className='text-gray-400 text-sm'>No available orders.</p>}    
           </div>
 
-        </div>
+        </div>}
+
+        {/* curren t order details */}
+        {currentOrder && <div className='bg-white rounded-2xl p-5 shadow-md w-[90%] border border-orange-100'>
+          <h2 className='text-lg font-bold mb-3'>📦Current Order</h2>
+          <div className='border rounded-lg p-4 mb-3'>
+            <p className='font-semibold text-sm'>{currentOrder?.shopOrder.shop.name}</p>
+            <p className='text-sm text-gray-500'>{currentOrder?.deliveryAddress}</p>
+            <p className='text-xs text-gray-400 '>{currentOrder.shopOrder.shopOrderItems.length} items | ₹{currentOrder.shopOrder.subtotal}</p>
+          </div>
+          </div>}
+        
+        
 
 
       </div>
