@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { set } from "mongoose";
 
 const userSlice = createSlice({
   name: "user",

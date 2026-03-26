@@ -10,7 +10,6 @@ import axios from 'axios';
 import { setMyShopData } from '../redux/ownerSlice';
 import { useEffect } from 'react';
 import { ClipLoader } from 'react-spinners';
-// import { set } from 'mongoose';
 
 
 function EditItem() {
