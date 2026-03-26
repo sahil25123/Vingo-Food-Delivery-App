@@ -1,4 +1,4 @@
-import React, { use, useEffect } from "react";
+import React, { useEffect } from "react";
 import Nav from "./Nav";
 import { categories } from "../category";
 import CategoryCard from "./CategoryCard";
@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 function UserDashboard() {
  
-  const { currentCity, shopInMyCity, itemsInMyCity } = useSelector(
+  const { currentCity, shopInMyCity, itemsInMyCity, searchItems } = useSelector(
     (state) => state.user,
   );
   const cateScrollRef = React.useRef();
@@ -164,11 +164,21 @@ function UserDashboard() {
   }, [categories]);
 
   return (
-    // <div className='w-full min-h-screen flex flex-col items-center px-5 py-8'>
-    //   <h1 className='text-2xl font-bold'>User Dashboard</h1>
-    // </div>
     <div className="w-screen min-h-screen flex flex-col gap-5 items-center bg-[#fff9f6] overflow-y-auto">
       <Nav />
+
+      {searchItems && searchItems.length>0 && 
+      <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-5 bg-white shadow-md rounded-2xl mt-4">
+        <h1 className="text-gray-900 text-2xl sm:text-3xl font-semibold border-b border-gray-200 pb-2">Search Results</h1>
+        <div className="w-full h-auto flex flex-wrap gap-6 justify-center">
+          {searchItems.map((item) =>(
+            <FoodCard key={item._id} data={item} />
+          ))}
+        </div>
+      </div>
+      }
+
+
       {/* category section */}
       <div className="w-full max-w-6xl flex flex-col gap-5 items-start p-2.5">
         <h1 className="text-gray-800 text-2xl sm:text-3xl">

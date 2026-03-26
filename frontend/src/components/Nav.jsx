@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { serverUrl } from "../App";
 import axios from "axios";
 import { useState } from "react";
-import { clearUserSession } from "../redux/userSlice";
+import { clearUserSession, setSearchItems } from "../redux/userSlice";
 import { FaPlus } from "react-icons/fa6";
 import { TbReceipt2 } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
@@ -61,7 +61,7 @@ function Nav() {
   const handleSearchItems=async () =>{
       try {
         const result=await axios.get(`${serverUrl}/api/item/search-items?query=${query}&city=${currentCity}`, {withCredentials:true})
-        console.log(result.data) 
+        dispatch(setSearchItems(result.data))
       } catch (error) {
         console.log(error)
         
@@ -71,7 +71,9 @@ function Nav() {
   useEffect(()=>{
     if(query){
       handleSearchItems()
-    } 
+    } else{
+       dispatch(setSearchItems(null))
+    }
   }, [query])
 
   return (

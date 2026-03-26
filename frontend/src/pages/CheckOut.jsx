@@ -29,7 +29,7 @@ function RecenterMap({ location }) {
 
 function CheckOut() {
   const { location, address } = useSelector((state) => state.map);
-  const { cartItems, totalAmount } = useSelector((state) => state.user);
+  const { cartItems, totalAmount, userData } = useSelector((state) => state.user);
   const hasValidLocation =
     typeof location?.lat === "number" && typeof location?.lon === "number";
   const mapCenter = hasValidLocation
@@ -66,12 +66,11 @@ function CheckOut() {
     }
   };
   const getCurrentLocation = () => {
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-      dispatch(setLocation({ lat: latitude, lon: longitude }));
-      getAddressByLatLng(latitude, longitude);
-    });
+    const latitude = userData.location.coordinates[1]  
+    const longitude = userData.location.coordinates[0]
+    dispatch(setLocation({ lat: latitude, lon: longitude }))
+    getAddressByLatLng(latitude, longitude)
+    
   };
   const getLatLngByAddress = async () => {
     try {
