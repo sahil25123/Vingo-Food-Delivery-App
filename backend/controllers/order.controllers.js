@@ -206,6 +206,7 @@ export const getMyOrders = async (req, res) => {
         createdAt: order.createdAt,
         deliveryAddress: order.deliveryAddress,
         totalAmount: order.totalAmount,
+        payment:order.payment,
       }));
 
       return res.status(200).json({ orders: filteredOrder });
