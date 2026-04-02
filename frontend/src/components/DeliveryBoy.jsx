@@ -1,10 +1,11 @@
-import React from "react";
+import React, { use } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { serverUrl } from "../App";
 import { useEffect } from "react";
 import { useState } from "react";
 import DeliveryBoyTracking from "./DeliveryBoyTracking"; 
+import { BarChart, CartesianGrid, ResponsiveContainer } from "recharts";
 
 function DeliveryBoy() {
   const { userData, socket } = useSelector((state) => state.user);
@@ -14,6 +15,7 @@ function DeliveryBoy() {
   const [availableAssignments, setAvailableAssignments] = useState(null);
   const [otp, setOtp] = useState("")
   const [deliveryBoyLocation, setDeliveryBoyLocation] = useState(null);
+  const [todayDeliveries, setTodayDeliveries] = useState([]);
 
   useEffect(() => {
     if(!socket || !userData.role=="deliveryBoy") return
@@ -40,6 +42,9 @@ function DeliveryBoy() {
       if(watchId)navigator.geolocation.clearWatch(watchId);
     }
   }, []);
+
+    const ratePerDelivery=50;
+    const totalEarnings=todayDeliveries.reduce((sum, d)=>sum+d.count*ratePerDelivery,0)
 
   const getAssignments = async () => {
     try {
@@ -108,6 +113,19 @@ function DeliveryBoy() {
     }
   };
 
+  const handleTodayDeliveries = async () => {
+    try {
+      const result = await axios.post(
+        `${serverUrl}/api/order/get-today-deliveries`,
+        { withCredentials: true },
+      );
+      console.log(result.data);
+      setTodayDeliveries(result.data);
+    } catch (error) {
+      console.log("VERIFY OTP ERROR:", error);
+    }
+  };
+
   useEffect(() => {
     socket?.on("newAssignment", (data) => {
       if(data.sentTo == userData._id){
@@ -123,13 +141,14 @@ function DeliveryBoy() {
   
 
   useEffect(() => {
-    if (!currentUser) return;
-
+    if (!userData) return;
+ 
     (async () => {
       await getAssignments();
       await getCurrentOrder();
+      await handleTodayDeliveries();
     })();
-  }, [currentUser]);
+  }, [userData]);
 
   return (
     <div className="w-screen min-h-screen flex flex-col gap-5 items-center bg-[#fff9f6] overflow-y-auto">
@@ -146,6 +165,30 @@ function DeliveryBoy() {
             {deliveryBoyLocation?.lon}
           </p>
         </div>
+
+        {/* today deliveries will be shown here */}
+        <div className="bg-white rounded-2xl shadow-md p-5 w-[90%] mb-6 border border-orange-100">
+          <h1 className="text-lg font-bold mb-3 text-[#ff4d2d]">Today's Deliveries</h1>
+
+          <ResponsiveContainer width="100%" height={200}>
+            <BarChart data={todayDeliveries}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="hour" tickFormatter={(h) => `${h}:00`} />
+              <YAxis allowDataOverflow={false} />
+              <Tooltip  formatter={(value) => [value, "orders"]} labelFormatter={(label) => `${label}:00`} />
+                <Bar dataKey="count" fill="#ff4d2d" />
+            </BarChart>
+          </ResponsiveContainer>
+
+          <div className="max-w-sm mx-auto mt-6 p-6 bg-white rounded-2xl shadow-lg text-center">
+            <h1 className="text-xl font-semibold text-gray-800 mb-2">Today's Earnings:</h1>
+            <span className="text-3xl font-bold text-green-600 ">₹{totalEarnings}</span>
+          </div>
+        </div>
+
+
+
+
 
         {/* available orders jo brodcast hue hain unko dikhana hai */}
         {!currentOrder && (
@@ -247,4 +290,4 @@ function DeliveryBoy() {
   );
 }
 
-export default DeliveryBoy;
+export default DeliveryBoy
