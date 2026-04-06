@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import connectDb from "./config/db.js";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
@@ -91,6 +92,7 @@ app.use(
               connectSrc: [
                 "'self'",
                 "https://api.razorpay.com",
+                "https://lumberjack.razorpay.com",
                 "https://api.geoapify.com",
                 "https://securetoken.googleapis.com",
                 "https://identitytoolkit.googleapis.com",
@@ -126,14 +128,31 @@ app.use("/api/order", orderRouter);
 socketHandler(io);
 // make our app ready for deployment
 if (NODE_ENV === "production") {
-  const frontendDistPath = path.join(__dirname, "../frontend/dist");
-  app.use(express.static(frontendDistPath));
+  const distCandidates = [
+    path.join(__dirname, "../frontend/dist"),
+    path.join(process.cwd(), "../frontend/dist"),
+    path.join(process.cwd(), "frontend/dist"),
+    path.join(process.cwd(), "dist"),
+  ];
+
+  const frontendDistPath = distCandidates.find((candidate) =>
+    fs.existsSync(path.join(candidate, "index.html")),
+  );
+
+  if (!frontendDistPath) {
+    console.error("Frontend dist not found. Checked:", distCandidates);
+  } else {
+    app.use(express.static(frontendDistPath));
+  }
 
   // Serve SPA index for non-API routes.
   app.get(/^\/(?!api).*/, (req, res) => {
     // If a file extension is present, this is likely an asset request.
     if (path.extname(req.path)) {
       return res.status(404).end();
+    }
+    if (!frontendDistPath) {
+      return res.status(500).json({ message: "Frontend build not found" });
     }
     res.sendFile(path.join(frontendDistPath, "index.html"));
   });
